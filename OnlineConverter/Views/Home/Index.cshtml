@@ -1,9 +1,47 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿<div class="container p-0">
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+   <div class="row" style="margin-top:110px;">
+
+       @* Блок конвертації *@
+        <div class="border col-md- p-3 d-flex align-items-center" style="width:800px; height:300px; margin-bottom:30px;">
+
+            <select class="form-control btn-primary" style="height:35px; width:auto;">
+                <option disabled selected>Оберіть валюту</option>
+            </select>
+            <input class="form-control m-3" style="height:35px; width:150px;" />
+            <button class="btn btn-primary">
+                <i class="fa-solid fa-right-left"></i>
+            </button>
+
+        </div>      
+
+        @* Блок актуального курсу USD & EUR*@
+        <div class="border col-md- p-0" style="width:400px; height:300px; margin-left:120px;">
+           <div class="text-center h-25">
+                <span class="fs-3">Актуальний курс USD та EUR</span>
+           </div>
+            <div class="p-4">
+                <div class="row d-flex justify-content-between">
+                    <span class="fs-1" style="max-width:105px; margin-left:30px;">USD:</span>
+                    <span class="fs-1" style="max-width:105px; margin-right:30px;">36.7</span>
+                </div>
+                <div class="row mt-4 d-flex justify-content-between">
+                    <span class="fs-1" style="max-width:105px; margin-left:30px;">EUR:</span>
+                    <span class="fs-1" style="max-width:105px; margin-right:30px;">41.2</span>
+                </div>
+            </div>
+       </div>
+
+       @* Блок графіка *@
+       <div class="border col-md-" style="width:800px; height:300px; margin-top:30px;">
+            <div class="text-center" style="height:42px;">
+                <span class="fs-4">Графік змін USD та EUR</span>
+            </div>
+            <div class="border h-75">
+
+            </div>
+       </div>
+
+   </div>
 
 </div>
