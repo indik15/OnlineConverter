@@ -4,34 +4,31 @@ namespace OnlineConverter.API
 {
     public class GetRequest
     {
-        HttpWebRequest _request;
+        private readonly string _address;
 
-        private string _address;
+        private readonly HttpClient _httpClient;
 
-        public string Response {  get; set; }   
+        public string Response { get; private set; }
 
         public GetRequest(string addres)
         {
-            _address = addres; 
+            _address = addres;
+            _httpClient = new HttpClient();
         }
 
-        public void Run()
+        public async Task RunAsync()
         {
-            _request = (HttpWebRequest)WebRequest.Create(_address);
-            _request.Method = "GET";
-
             try
             {
-                HttpWebResponse response = (HttpWebResponse)_request.GetResponse();
-                var stream = response.GetResponseStream();
+                using HttpResponseMessage response = await _httpClient.GetAsync(_address);
 
-                if (stream != null)
+                if (response.IsSuccessStatusCode)
                 {
-                    Response = new StreamReader(stream).ReadToEnd();
+                    Response = await response.Content.ReadAsStringAsync();
                 }
             }
             catch (Exception)
-            {               
+            {
             }
         }
     }
