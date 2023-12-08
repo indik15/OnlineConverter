@@ -61,6 +61,12 @@ namespace OnlineConverter.Controllers
 
             return View(currencyVM);
         }
+        [HttpPost]
+        public IActionResult Index(int firstNum, int secondNum)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> DbClear()
