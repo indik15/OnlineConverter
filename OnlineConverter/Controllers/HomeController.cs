@@ -52,7 +52,7 @@ namespace OnlineConverter.Controllers
             CurrencyVM currencyVM = new CurrencyVM
             {
                 Currency = new Currency(),
-                SelectListItem =  _db.Currencies.Select(i => new SelectListItem
+                CurrencySelectList =  _db.Currencies.Select(i => new SelectListItem
                 {
                     Text = i.Name,
                     Value = i.Id.ToString(),
