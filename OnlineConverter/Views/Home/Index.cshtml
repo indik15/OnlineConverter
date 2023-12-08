@@ -1,57 +1,63 @@
-﻿<div class="container p-0">
+﻿@model OnlineConverter.Models.ViewModel.CurrencyVM
 
-   <div class="row" style="margin-top:110px;">
+<div class="container p-0">
 
-      <form method="post" asp-action="DbClear">
-            <button type="submit" class="btn btn-danger" style="margin-bottom:70px;">Очистить БД</button>
-      </form>
+   <form method="post">
+        <div class="row" style="margin-top:110px;">
 
-       @* Блок конвертації *@
-        <div class="border col-md- p-3 d-flex align-items-center justify-content-center" style="width:800px; height:300px; margin-bottom:30px;">
-
-            <select class="form-control btn-primary text-center" style="height:35px; min-width:150px; width:auto;">
-                <option disabled selected>Маю</option>
-            </select>
-            <input class="form-control m-3" style="height:35px; width:150px;" />
-            <button class="btn btn-primary">
-                <i class="fa-solid fa-right-left"></i>
-            </button>
-            <div class="form-control m-3" style="height:35px; width:150px;">
-
-            </div>
-
-            <select class="form-control btn-primary text-center" style="height:35px; min-width:150px; width:auto;">
-                <option disabled selected>Отримаю</option>
-            </select>
-        </div>      
-
-        @* Блок актуального курсу USD & EUR*@
-        <div class="border col-md- p-0" style="width:400px; height:300px; margin-left:120px;">
-           <div class="text-center h-25">
-                <span class="fs-3">Актуальний курс USD та EUR</span>
+           <div>
+                <form method="post" asp-action="DbClear">
+                    <button type="submit" class="btn btn-danger" style="margin-bottom:70px;">Очистить БД</button>
+                </form>
            </div>
-            <div class="p-4">
-                <div class="row d-flex justify-content-between">
-                    <span class="fs-1" style="max-width:105px; margin-left:30px;">USD:</span>
-                    <span class="fs-1" style="max-width:105px; margin-right:30px;">36.7</span>
+
+            @* Блок конвертації *@
+            <div class="border col-md- p-3 d-flex align-items-center justify-content-center" style="width:800px; height:300px; margin-bottom:30px;">
+
+                <select asp-for="Currency.Id" asp-items="@Model.CurrencySelectList" class="form-control text-left" style="height:35px; min-width:150px; width:auto;">
+                    <option disabled selected class="text-center">Маю</option>
+                </select>
+
+                <input class="form-control m-3" style="height:35px; width:150px;" />
+                <button class="btn btn-primary">
+                    <i class="fa-solid fa-right-left"></i>
+                </button>
+                <div class="form-control m-3" style="height:35px; width:150px;">
                 </div>
-                <div class="row mt-4 d-flex justify-content-between">
-                    <span class="fs-1" style="max-width:105px; margin-left:30px;">EUR:</span>
-                    <span class="fs-1" style="max-width:105px; margin-right:30px;">41.2</span>
+
+                <select asp-for="Currency.Id" asp-items="@Model.CurrencySelectList" class="form-control text-left" style="height:35px; min-width:150px; width:auto;">
+                    <option disabled selected class="text-center">Отримаю</option>
+                </select>
+
+            </div>
+
+            @* Блок актуального курсу USD & EUR*@
+            <div class="border col-md- p-0" style="width:400px; height:300px; margin-left:120px;">
+                <div class="text-center h-25">
+                    <span class="fs-3">Актуальний курс USD та EUR</span>
+                </div>
+                <div class="p-4">
+                    <div class="row d-flex justify-content-between">
+                        <span class="fs-1" style="max-width:105px; margin-left:30px;">USD:</span>
+                        <span class="fs-1" style="max-width:105px; margin-right:30px;">36.7</span>
+                    </div>
+                    <div class="row mt-4 d-flex justify-content-between">
+                        <span class="fs-1" style="max-width:105px; margin-left:30px;">EUR:</span>
+                        <span class="fs-1" style="max-width:105px; margin-right:30px;">41.2</span>
+                    </div>
                 </div>
             </div>
-       </div>
 
-       @* Блок графіка *@
-       <div class="border col-md-" style="width:800px; height:300px; margin-top:30px;">
-            <div class="text-center" style="height:42px;">
-                <span class="fs-4">Графік змін USD та EUR</span>
+            @* Блок графіка *@
+            <div class="border col-md-" style="width:800px; height:300px; margin-top:30px;">
+                <div class="text-center" style="height:42px;">
+                    <span class="fs-4">Графік змін USD та EUR</span>
+                </div>
+                <div class="border h-75">
+                </div>
             </div>
-            <div class="border h-75">
 
-            </div>
-       </div>
-
-   </div>
+        </div>
+   </form>
 
 </div>
