@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using OnlineConverter.API;
 using OnlineConverter.Data;
 using OnlineConverter.Models;
+using OnlineConverter.Models.ViewModel;
 using System.Diagnostics;
 
 namespace OnlineConverter.Controllers
@@ -38,7 +40,18 @@ namespace OnlineConverter.Controllers
 
             await _db.SaveChangesAsync();
 
-            return View();
+
+            CurrencyVM currencyVM = new CurrencyVM
+            {
+                currency = new Currency(),
+                selectCurrency =  _db.Currencies.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString(),
+                })
+            };
+
+            return View(currencyVM);
         }
 
         [HttpPost]
