@@ -51,8 +51,8 @@ namespace OnlineConverter.Controllers
 
             CurrencyVM currencyVM = new CurrencyVM
             {
-                currency = new Currency(),
-                selectCurrency =  _db.Currencies.Select(i => new SelectListItem
+                Currency = new Currency(),
+                SelectListItem =  _db.Currencies.Select(i => new SelectListItem
                 {
                     Text = i.Name,
                     Value = i.Id.ToString(),
