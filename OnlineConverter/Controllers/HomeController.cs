@@ -17,6 +17,7 @@ namespace OnlineConverter.Controllers
             _db = db;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var getRequest = new GetRequest("https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json");
@@ -24,7 +25,7 @@ namespace OnlineConverter.Controllers
 
             var currencyJsons = JsonConvert.DeserializeObject<List<CurrencyJson>>(getRequest.Response);
 
-            foreach(var obj in currencyJsons)
+            foreach (var obj in currencyJsons)
             {
                 var currency = new Currency
                 {
@@ -38,6 +39,15 @@ namespace OnlineConverter.Controllers
             await _db.SaveChangesAsync();
 
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DbClear()
+        {
+            _db.Currencies.RemoveRange(_db.Currencies);
+
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Privacy()
