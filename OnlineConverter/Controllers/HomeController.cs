@@ -29,13 +29,21 @@ namespace OnlineConverter.Controllers
 
             foreach (var obj in currencyJsons)
             {
-                var currency = new Currency
+                if(obj.Code == "XDR" || obj.Code == "RUB" || obj.Code == "XAU"
+                    || obj.Code == "XAG" || obj.Code == "XPT" || obj.Code == "XPD")
                 {
-                    Name = obj.Name,
-                    Code = obj.Code,
-                    Price = obj.Price
-                };
-                _db.Currencies.Add(currency);
+                    continue;
+                }
+                else
+                {
+                    var currency = new Currency
+                    {
+                        Name = obj.Name,
+                        Code = obj.Code,
+                        Price = obj.Price
+                    };
+                    _db.Currencies.Add(currency);
+                }              
             }
 
             await _db.SaveChangesAsync();
