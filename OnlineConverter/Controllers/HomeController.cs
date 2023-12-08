@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using OnlineConverter.Data;
 using OnlineConverter.Models;
 using System.Diagnostics;
 
@@ -7,10 +8,11 @@ namespace OnlineConverter.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ApplicationDbContext _db;
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext db)
         {
             _logger = logger;
+            _db = db;
         }
 
         public IActionResult Index()
