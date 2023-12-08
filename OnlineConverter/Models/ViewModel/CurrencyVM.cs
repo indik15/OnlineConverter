@@ -4,8 +4,8 @@ namespace OnlineConverter.Models.ViewModel
 {
     public class CurrencyVM
     {
-        public Currency currency { get; set; }
+        public Currency Currency { get; set; }
 
-        public IEnumerable<SelectListItem> selectCurrency { get; set; }
+        public IEnumerable<SelectListItem> SelectListItem { get; set; }
     }
 }
