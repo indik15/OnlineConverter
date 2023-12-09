@@ -55,14 +55,14 @@ namespace OnlineConverter.Controllers
                 CurrencySelectList =  _db.Currencies.Select(i => new SelectListItem
                 {
                     Text = i.Name,
-                    Value = i.Id.ToString(),
+                    Value = i.Price.ToString()
                 })
             };
 
             return View(currencyVM);
         }
         [HttpPost]
-        public IActionResult Index(int firstNum, int secondNum)
+        public IActionResult Index(double firstNum, double secondNum)
         {
             return RedirectToAction(nameof(Index));
         }
