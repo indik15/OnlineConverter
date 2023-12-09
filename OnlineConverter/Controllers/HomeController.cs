@@ -62,7 +62,7 @@ namespace OnlineConverter.Controllers
             return View(currencyVM);
         }
         [HttpPost]
-        public IActionResult Index(double firstNum, double secondNum)
+        public IActionResult Index(CurrencyVM currencyVM)
         {
             return RedirectToAction(nameof(Index));
         }
