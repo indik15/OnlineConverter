@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using OnlineConverter.API;
 using OnlineConverter.Data;
@@ -42,11 +43,11 @@ namespace OnlineConverter.Controllers
                         Code = obj.Code,
                         Price = obj.Price
                     };
-                    _db.Currencies.Add(currency);
+                    //_db.Currencies.Add(currency);
                 }              
             }
 
-            await _db.SaveChangesAsync();
+            //await _db.SaveChangesAsync();
 
 
             CurrencyVM currencyVM = new CurrencyVM
@@ -73,13 +74,10 @@ namespace OnlineConverter.Controllers
         {
             _db.Currencies.RemoveRange(_db.Currencies);
 
+            await _db.Database.ExecuteSqlRawAsync("DBCC CHECKIDENT (Currencies, RESEED, 0);");
             await _db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
 
-        public IActionResult Privacy()
-        {
-            return View();
+            return RedirectToAction(nameof(Index));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
