@@ -6,7 +6,10 @@ using OnlineConverter.API;
 using OnlineConverter.Data;
 using OnlineConverter.Models;
 using OnlineConverter.Models.ViewModel;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace OnlineConverter.Controllers
 {
@@ -28,6 +31,19 @@ namespace OnlineConverter.Controllers
 
             var currencyJsons = JsonConvert.DeserializeObject<List<CurrencyJson>>(getRequest.Response);
 
+            CurrencyJson addUAH = new CurrencyJson
+            {
+                Name = "Українська гривня",
+                Code = "UAH",
+                Price = 1
+            };
+
+            currencyJsons.Add(addUAH);
+            //IEnumerable<Currency> dbObj = _db.Currencies.ToList();
+            //foreach (var c in dbObj)
+            //{
+            //    if (c.Code == )
+            //}
             foreach (var obj in currencyJsons)
             {
                 if(obj.Code == "XDR" || obj.Code == "RUB" || obj.Code == "XAU"
@@ -44,7 +60,7 @@ namespace OnlineConverter.Controllers
                         Price = obj.Price
                     };
                     //_db.Currencies.Add(currency);
-                }              
+                }
             }
 
             //await _db.SaveChangesAsync();
@@ -56,16 +72,43 @@ namespace OnlineConverter.Controllers
                 CurrencySelectList =  _db.Currencies.Select(i => new SelectListItem
                 {
                     Text = i.Name,
-                    Value = i.Price.ToString()
+                    Value = i.Id.ToString()
                 })
             };
 
             return View(currencyVM);
         }
         [HttpPost]
-        public IActionResult Index(CurrencyVM currencyVM)
+        public IActionResult Index(int firstCurrencyId, int secondCurrencyId, string inputNum)
         {
-            return RedirectToAction(nameof(Index));
+            double num = double.Parse(inputNum);
+            double[] obj = _db.Currencies
+                .Where(u => u.Id == firstCurrencyId || u.Id == secondCurrencyId)
+                .OrderBy(u => u.Id == firstCurrencyId ? 0 : 1)
+                .Select(u => u.Price)
+                .ToArray();
+
+            //if (!double.TryParse(inputNum, NumberStyles.Any, CultureInfo.GetCultureInfo("ru-RU"), out double hello))
+            //{
+            //    return NotFound();
+            //}
+            //NumberFormatInfo formatInfo = new();
+            //formatInfo.NumberDecimalSeparator= ".";
+            CurrencyVM currencyVM = new CurrencyVM
+            {
+                Currency = new Currency(),
+                CurrencySelectList = _db.Currencies.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString()
+                })
+            };
+            double firstInUAH = 0.0d;
+            firstInUAH += num * obj[0];
+            currencyVM.convertedNumber += firstInUAH / obj[1];
+
+            
+            return View(currencyVM);
         }
 
 
