@@ -22,7 +22,15 @@
                     <i class="fa-solid fa-right-left"></i>
                 </button>
                 <div class="form-control m-3" style="height:35px; width:150px;">
-                    <span>@Model.convertedNumber</span>
+                    @if (Model.isCanConverted)
+                    {
+                        <span>@Model.convertedNumber</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">Помилка</span>
+
+                    }
                 </div>
 
                 <select name="secondCurrencyId" asp-items="@Model.CurrencySelectList" class="form-control text-left" style="height:35px; min-width:150px; width:auto;">
