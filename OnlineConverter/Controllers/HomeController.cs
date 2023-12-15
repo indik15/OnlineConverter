@@ -37,21 +37,19 @@ namespace OnlineConverter.Controllers
                 Code = "UAH",
                 Price = 1
             };
-
             currencyJsons.Add(addUAH);
-            //IEnumerable<Currency> dbObj = _db.Currencies.ToList();
-            //foreach (var c in dbObj)
-            //{
-            //    if (c.Code == )
-            //}
+           
+            Dictionary<string, Currency> dbcurrency = _db.Currencies.ToDictionary(c=>c.Code);
+
             foreach (var obj in currencyJsons)
             {
-                if(obj.Code == "XDR" || obj.Code == "RUB" || obj.Code == "XAU"
+                if (obj.Code == "XDR" || obj.Code == "RUB" || obj.Code == "XAU"
                     || obj.Code == "XAG" || obj.Code == "XPT" || obj.Code == "XPD")
                 {
                     continue;
                 }
-                else
+
+                if (!_db.Currencies.Any())
                 {
                     var currency = new Currency
                     {
@@ -59,11 +57,31 @@ namespace OnlineConverter.Controllers
                         Code = obj.Code,
                         Price = obj.Price
                     };
-                    //_db.Currencies.Add(currency);
+                    _db.Currencies.Add(currency);
+                }
+               
+                else
+                {
+                    if ( dbcurrency.Count !=0 && dbcurrency.TryGetValue(obj.Code, out Currency currency))
+                    {
+                        if(obj.Price != currency.Price)
+                        {
+                            currency.Price = obj.Price;
+                            _db.Currencies.Update(currency);
+                        }
+                        else
+                        {
+                            continue;                           
+                        }
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
                 }
             }
 
-            //await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
 
 
             CurrencyVM currencyVM = new CurrencyVM
