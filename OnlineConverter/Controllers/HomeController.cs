@@ -81,19 +81,32 @@ namespace OnlineConverter.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(int firstCurrencyId, int secondCurrencyId, string inputNum)
         {
-            double num = double.Parse(inputNum);
+            double convertNum;
+            if (double.TryParse(inputNum,
+                    NumberStyles.Number,
+                    new NumberFormatInfo()
+                    {
+                        NumberDecimalSeparator = ".",
+                        NumberGroupSeparator = ""
+                    },
+                    out convertNum) ||
+                    double.TryParse(inputNum,
+                    NumberStyles.Number,
+                    new NumberFormatInfo()
+                    {
+                        NumberDecimalSeparator = ",",
+                        NumberGroupSeparator = ""
+                    },
+                    out convertNum))
+            {
+
+            }
             double[] obj = await _db.Currencies
                 .Where(u => u.Id == firstCurrencyId || u.Id == secondCurrencyId)
                 .OrderBy(u => u.Id == firstCurrencyId ? 0 : 1)
                 .Select(u => u.Price)
                 .ToArrayAsync();
 
-            //if (!double.TryParse(inputNum, NumberStyles.Any, CultureInfo.GetCultureInfo("ru-RU"), out double hello))
-            //{
-            //    return NotFound();
-            //}
-            //NumberFormatInfo formatInfo = new();
-            //formatInfo.NumberDecimalSeparator= ".";
             CurrencyVM currencyVM = new CurrencyVM
             {
                 Currency = new Currency(),
@@ -103,11 +116,14 @@ namespace OnlineConverter.Controllers
                     Value = i.Id.ToString()
                 })
             };
-            double firstInUAH = 0.0d;
-            firstInUAH += num * obj[0];
-            currencyVM.convertedNumber += firstInUAH / obj[1];
 
-            
+            if(obj.Length == 2 && obj[0] != 0 && obj[1] != 0)
+            {
+                double firstInUAH = 0.0d;
+                firstInUAH += convertNum * obj[0];
+                currencyVM.convertedNumber += Math.Round(firstInUAH / obj[1], 4);
+            }
+                    
             return View(currencyVM);
         }
 
