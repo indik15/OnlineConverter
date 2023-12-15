@@ -79,14 +79,14 @@ namespace OnlineConverter.Controllers
             return View(currencyVM);
         }
         [HttpPost]
-        public IActionResult Index(int firstCurrencyId, int secondCurrencyId, string inputNum)
+        public async Task<IActionResult> Index(int firstCurrencyId, int secondCurrencyId, string inputNum)
         {
             double num = double.Parse(inputNum);
-            double[] obj = _db.Currencies
+            double[] obj = await _db.Currencies
                 .Where(u => u.Id == firstCurrencyId || u.Id == secondCurrencyId)
                 .OrderBy(u => u.Id == firstCurrencyId ? 0 : 1)
                 .Select(u => u.Price)
-                .ToArray();
+                .ToArrayAsync();
 
             //if (!double.TryParse(inputNum, NumberStyles.Any, CultureInfo.GetCultureInfo("ru-RU"), out double hello))
             //{
