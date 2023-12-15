@@ -123,6 +123,10 @@ namespace OnlineConverter.Controllers
                 firstInUAH += convertNum * obj[0];
                 currencyVM.convertedNumber += Math.Round(firstInUAH / obj[1], 4);
             }
+            else
+            {
+                currencyVM.isCanConverted = false;
+            }
                     
             return View(currencyVM);
         }
