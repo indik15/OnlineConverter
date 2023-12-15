@@ -26,11 +26,14 @@ namespace OnlineConverter.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            //Отримання даних з API
             var getRequest = new GetRequest("https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json");
             await getRequest.RunAsync();
 
+            //Конвертація API
             var currencyJsons = JsonConvert.DeserializeObject<List<CurrencyJson>>(getRequest.Response);
 
+            //Додавання гривні
             CurrencyJson addUAH = new CurrencyJson
             {
                 Name = "Українська гривня",
@@ -38,17 +41,21 @@ namespace OnlineConverter.Controllers
                 Price = 1
             };
             currencyJsons.Add(addUAH);
-           
+
+            //Витяг поточних даних з БД
             Dictionary<string, Currency> dbcurrency = _db.Currencies.ToDictionary(c=>c.Code);
 
+            
             foreach (var obj in currencyJsons)
             {
+                //Перебір даних
                 if (obj.Code == "XDR" || obj.Code == "RUB" || obj.Code == "XAU"
                     || obj.Code == "XAG" || obj.Code == "XPT" || obj.Code == "XPD")
                 {
                     continue;
                 }
 
+                //Якщо в БД пусто перезаписуємо її
                 if (!_db.Currencies.Any())
                 {
                     var currency = new Currency
@@ -62,6 +69,7 @@ namespace OnlineConverter.Controllers
                
                 else
                 {
+                    //Оновлюємо дані якщо потрібно
                     if ( dbcurrency.Count !=0 && dbcurrency.TryGetValue(obj.Code, out Currency currency))
                     {
                         if(obj.Price != currency.Price)
@@ -83,7 +91,7 @@ namespace OnlineConverter.Controllers
 
             await _db.SaveChangesAsync();
 
-
+            //Передача списку назв валют та їх Id в select
             CurrencyVM currencyVM = new CurrencyVM
             {
                 Currency = new Currency(),
@@ -99,6 +107,7 @@ namespace OnlineConverter.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(int firstCurrencyId, int secondCurrencyId, string inputNum)
         {
+            //Додали функціонал що приймає як "." так і ","
             double convertNum;
             if (double.TryParse(inputNum,
                     NumberStyles.Number,
@@ -119,12 +128,14 @@ namespace OnlineConverter.Controllers
             {
 
             }
+            //приймаємо 2 курса валют по Id
             double[] obj = await _db.Currencies
                 .Where(u => u.Id == firstCurrencyId || u.Id == secondCurrencyId)
                 .OrderBy(u => u.Id == firstCurrencyId ? 0 : 1)
                 .Select(u => u.Price)
                 .ToArrayAsync();
 
+            //Передача списку назв валют та їх Id в select
             CurrencyVM currencyVM = new CurrencyVM
             {
                 Currency = new Currency(),
@@ -135,7 +146,8 @@ namespace OnlineConverter.Controllers
                 })
             };
 
-            if(obj.Length == 2 && obj[0] != 0 && obj[1] != 0)
+            //Формула конвертації
+            if (obj.Length == 2 && obj[0] != 0 && obj[1] != 0)
             {
                 double firstInUAH = 0.0d;
                 firstInUAH += convertNum * obj[0];
@@ -143,6 +155,7 @@ namespace OnlineConverter.Controllers
             }
             else
             {
+                //Якщо в масиві відсутні необхідні дані вибиваємо помилку
                 currencyVM.isCanConverted = false;
             }
                     
