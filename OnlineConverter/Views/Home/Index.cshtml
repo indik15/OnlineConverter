@@ -17,18 +17,12 @@
                     <option value="0" disabled selected class="text-center">Маю</option>
                 </select>
 
-                <input type="text" name="inputNum" class="form-control m-3" style="height:35px; width:150px;" />
+                <input type="text" name="inputNum" id="inputNum" class="form-control m-3" style="height:35px; width:150px;" @* oninput="validateInput(this)" *@ />
                 <button type="submit" class="btn btn-primary">
                     <i class="fa-solid fa-right-left"></i>
                 </button>
 
-                @if (Model.isCanConverted)
-                {
-                    <input id="convertedNumber" class="form-control m-3" style="height:35px; width:150px; background-color:#fff;" value="@Model.convertedNumber" readonly />
-                }
-                else
-                {
-                }
+                <input id="convertedNumber" class="form-control m-3" style="height:35px; width:150px; background-color:#fff;" value="@Model.ConvertedNumber" readonly />
 
                 <select name="secondCurrencyId" asp-items="@Model.CurrencySelectList" class="form-control text-left" style="height:35px; min-width:150px; width:auto;">
                     <option value="0" disabled selected class="text-center">Отримаю</option>
@@ -79,6 +73,7 @@
                     data: formData,
                     success: function (result) {
                         $('#convertedNumber').val(result.convertedNumber);
+                        $('#conversionError').text(result.IsConverted ? '' : 'Помилка');
                     },
                     error: function () {
                         console.log('Error in AJAX request');
@@ -87,4 +82,11 @@
             });
         });
     </script>
+
+    @* <script>
+        function validateInput(input) {
+            // Заменить все символы, кроме цифр, точек и запятых, на пустую строку
+            input.value = input.value.replace(/[^\d.,]/g, '');
+        }
+    </script> *@
 }

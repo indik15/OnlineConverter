@@ -151,18 +151,12 @@ namespace OnlineConverter.Controllers
             {
                 double firstInUAH = 0.0d;
                 firstInUAH += convertNum * obj[0];
-                currencyVM.convertedNumber += Math.Round(firstInUAH / obj[1], 4);
-            }
-            else
-            {
-                //якщо в масив≥ в≥дсутн≥ необх≥дн≥ дан≥ вибиваЇмо помилку
-                currencyVM.isCanConverted = false;
+                currencyVM.ConvertedNumber += Math.Round(firstInUAH / obj[1], 4);
             }
 
             return Json(new
             {
-                convertedNumber = currencyVM.convertedNumber,
-                isCanConverted = currencyVM.isCanConverted
+                convertedNumber = currencyVM.ConvertedNumber,
             });
         }
 
