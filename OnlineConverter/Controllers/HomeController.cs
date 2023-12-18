@@ -105,7 +105,7 @@ namespace OnlineConverter.Controllers
             return View(currencyVM);
         }
         [HttpPost]
-        public async Task<IActionResult> Index(int firstCurrencyId, int secondCurrencyId, string inputNum)
+        public async Task<JsonResult> Index(int firstCurrencyId, int secondCurrencyId, string inputNum)
         {
             //Додали функціонал що приймає як "." так і ","
             double convertNum;
@@ -158,8 +158,12 @@ namespace OnlineConverter.Controllers
                 //Якщо в масиві відсутні необхідні дані вибиваємо помилку
                 currencyVM.isCanConverted = false;
             }
-                    
-            return View(currencyVM);
+
+            return Json(new
+            {
+                convertedNumber = currencyVM.convertedNumber,
+                isCanConverted = currencyVM.isCanConverted
+            });
         }
 
 

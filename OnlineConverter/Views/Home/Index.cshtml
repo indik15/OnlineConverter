@@ -22,14 +22,13 @@
                     <i class="fa-solid fa-right-left"></i>
                 </button>
 
-                    @if (Model.isCanConverted)
-                    {
-                    <input class="form-control m-3" style="height:35px; width:150px; background-color:#fff;" value="@Model.convertedNumber" readonly />
+                @if (Model.isCanConverted)
+                {
+                    <input id="convertedNumber" class="form-control m-3" style="height:35px; width:150px; background-color:#fff;" value="@Model.convertedNumber" readonly />
                 }
-                    else
-                    {
-                    <input class="form-control m-3 text-danger" style="height:35px; width:150px; background-color:#fff;" value="Помилка" readonly />
-                    }
+                else
+                {
+                }
 
                 <select name="secondCurrencyId" asp-items="@Model.CurrencySelectList" class="form-control text-left" style="height:35px; min-width:150px; width:auto;">
                     <option value="0" disabled selected class="text-center">Отримаю</option>
@@ -66,3 +65,26 @@
     </form>
     
 </div>
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('form').submit(function (event) {
+                event.preventDefault();
+
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("Index")',
+                    data: formData,
+                    success: function (result) {
+                        $('#convertedNumber').val(result.convertedNumber);
+                    },
+                    error: function () {
+                        console.log('Error in AJAX request');
+                    }
+                });
+            });
+        });
+    </script>
+}
