@@ -13,18 +13,18 @@
             @* Блок конвертації *@
             <div class="border col-md- p-3 d-flex align-items-center justify-content-center" style="width:800px; height:300px; margin-bottom:30px;">
 
-                <select name="firstCurrencyId" asp-items="@Model.CurrencySelectList" class="form-control text-left" style="height:35px; min-width:150px; width:auto;">
+                <select id="firstCurrencyId" name="firstCurrencyId" asp-items="@Model.CurrencySelectList" class="form-control text-left" style="height:35px; min-width:150px; width:auto;">
                     <option value="0" disabled selected class="text-center">Маю</option>
                 </select>
 
                 <input type="text" name="inputNum" id="inputNum" class="form-control m-3" style="height:35px; width:150px;" @* oninput="validateInput(this)" *@ />
-                <button type="button" class="btn btn-primary">
+                <button id="exchangeButton" type="button" class="btn btn-primary">
                     <i class="fa-solid fa-right-left"></i>
                 </button>
 
                 <input id="convertedNumber" class="form-control m-3" style="height:35px; width:150px; background-color:#fff;" value="@Model.ConvertedNumber" readonly />
 
-                <select name="secondCurrencyId" asp-items="@Model.CurrencySelectList" class="form-control text-left" style="height:35px; min-width:150px; width:auto;">
+                <select id="secondCurrencyId" name="secondCurrencyId" asp-items="@Model.CurrencySelectList" class="form-control text-left" style="height:35px; min-width:150px; width:auto;">
                     <option value="0" disabled selected class="text-center">Отримаю</option>
                 </select>
             </div>
@@ -62,7 +62,6 @@
 @section scripts {
     <script>
         $(document).ready(function () {
-            // Функция для отправки данных на сервер и обновления результата
             function updateConversion() {
                 var formData = $('form').serialize();
 
@@ -80,17 +79,25 @@
                 });
             }
 
-            // Обработчик события input для поля ввода числа
             $('#inputNum').on('input', function () {
                 updateConversion();
             });
 
-            // Обработчики события change для полей выбора валют
-            $('select[name="firstCurrencyId"]').change(function () {
+            $('#firstCurrencyId').change(function () {
                 updateConversion();
             });
 
-            $('select[name="secondCurrencyId"]').change(function () {
+            $('#secondCurrencyId').change(function () {
+                updateConversion();
+            });
+
+            $('#exchangeButton').on('click', function () {
+                var firstCurrencyValue = $('#firstCurrencyId').val();
+                var secondCurrencyValue = $('#secondCurrencyId').val();
+
+                $('#firstCurrencyId').val(secondCurrencyValue);
+                $('#secondCurrencyId').val(firstCurrencyValue);
+
                 updateConversion();
             });
         });
