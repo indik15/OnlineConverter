@@ -18,7 +18,7 @@
                 </select>
 
                 <input type="text" name="inputNum" id="inputNum" class="form-control m-3" style="height:35px; width:150px;" @* oninput="validateInput(this)" *@ />
-                <button type="submit" class="btn btn-primary">
+                <button type="button" class="btn btn-primary">
                     <i class="fa-solid fa-right-left"></i>
                 </button>
 
@@ -62,10 +62,9 @@
 @section scripts {
     <script>
         $(document).ready(function () {
-            $('form').submit(function (event) {
-                event.preventDefault();
-
-                var formData = $(this).serialize();
+            // Функция для отправки данных на сервер и обновления результата
+            function updateConversion() {
+                var formData = $('form').serialize();
 
                 $.ajax({
                     type: 'POST',
@@ -73,12 +72,26 @@
                     data: formData,
                     success: function (result) {
                         $('#convertedNumber').val(result.convertedNumber);
-                        $('#conversionError').text(result.IsConverted ? '' : 'Помилка');
+                        $('#conversionError').text('Помилка');
                     },
                     error: function () {
                         console.log('Error in AJAX request');
                     }
                 });
+            }
+
+            // Обработчик события input для поля ввода числа
+            $('#inputNum').on('input', function () {
+                updateConversion();
+            });
+
+            // Обработчики события change для полей выбора валют
+            $('select[name="firstCurrencyId"]').change(function () {
+                updateConversion();
+            });
+
+            $('select[name="secondCurrencyId"]').change(function () {
+                updateConversion();
             });
         });
     </script>
