@@ -72,12 +72,23 @@
                     success: function (result) {
                         $('#convertedNumber').val(result.convertedNumber);
                         $('#conversionError').text('Помилка');
+
+                        var firstCurrencyValue = $('#firstCurrencyId').val();
+                        var secondCurrencyValue = $('#secondCurrencyId').val();
+
+                        if (!firstCurrencyValue || !secondCurrencyValue) {
+                            $('#exchangeButton').prop('disabled', true);
+                        } else {
+                            $('#exchangeButton').prop('disabled', false);
+                        }
                     },
                     error: function () {
                         console.log('Error in AJAX request');
                     }
                 });
             }
+
+            updateConversion();
 
             $('#inputNum').on('input', function () {
                 updateConversion();
