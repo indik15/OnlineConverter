@@ -55,6 +55,23 @@ namespace OnlineConverter.Controllers
                     continue;
                 }
 
+                if (obj.Code == "ILS")
+                {
+                    obj.Name = "Новий ізраїл. шекель";
+                }
+                else if(obj.Code == "AZN")
+                {
+                    obj.Name = "Азербайджан. манат";
+                }
+                else if (obj.Code == "TWD")
+                {
+                    obj.Name = "Новий тайван. долар";
+                }
+                else if (obj.Code == "TMT")
+                {
+                    obj.Name = "Туркмен. новий манат";
+                }
+
                 //Якщо в БД пусто перезаписуємо її
                 if (!_db.Currencies.Any())
                 {
