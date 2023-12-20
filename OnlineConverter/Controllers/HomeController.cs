@@ -55,6 +55,7 @@ namespace OnlineConverter.Controllers
                     continue;
                 }
 
+                //Скорочуємо назви
                 if (obj.Code == "ILS")
                 {
                     obj.Name = "Новий ізраїл. шекель";
