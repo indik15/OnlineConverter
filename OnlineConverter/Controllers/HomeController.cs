@@ -107,6 +107,18 @@ namespace OnlineConverter.Controllers
         [HttpPost]
         public async Task<JsonResult> Index(int firstCurrencyId, int secondCurrencyId, string inputNum)
         {
+            //Передача списку назв валют та їх Id в select
+            CurrencyVM currencyVM = new CurrencyVM
+            {
+                Currency = new Currency(),
+                CurrencySelectList = _db.Currencies.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString()
+                })
+            };
+
+            
             //Додали функціонал що приймає як "." так і ","
             double convertNum;
             if (double.TryParse(inputNum,
@@ -128,6 +140,16 @@ namespace OnlineConverter.Controllers
             {
 
             }
+
+            if (firstCurrencyId == secondCurrencyId)
+            {
+                currencyVM.ConvertedNumber = convertNum;
+                return Json(new
+                {
+                    convertedNumber = currencyVM.ConvertedNumber,
+                });
+            }
+
             //приймаємо 2 курса валют по Id
             double[] obj = await _db.Currencies
                 .Where(u => u.Id == firstCurrencyId || u.Id == secondCurrencyId)
@@ -135,23 +157,13 @@ namespace OnlineConverter.Controllers
                 .Select(u => u.Price)
                 .ToArrayAsync();
 
-            //Передача списку назв валют та їх Id в select
-            CurrencyVM currencyVM = new CurrencyVM
-            {
-                Currency = new Currency(),
-                CurrencySelectList = _db.Currencies.Select(i => new SelectListItem
-                {
-                    Text = i.Name,
-                    Value = i.Id.ToString()
-                })
-            };
-
+            
             //Формула конвертації
             if (obj.Length == 2 && obj[0] != 0 && obj[1] != 0)
-            {
+            {               
                 double firstInUAH = 0.0d;
                 firstInUAH += convertNum * obj[0];
-                currencyVM.ConvertedNumber += Math.Round(firstInUAH / obj[1], 4);
+                currencyVM.ConvertedNumber = Math.Round(firstInUAH / obj[1], 4);
             }
 
             return Json(new
