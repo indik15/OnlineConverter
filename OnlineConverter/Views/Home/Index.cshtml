@@ -17,7 +17,7 @@
                     <option value="0" disabled selected class="text-center">Маю</option>
                 </select>
 
-                <input type="text" name="inputNum" id="inputNum" class="form-control m-3" style="height:35px; width:150px;" @* oninput="validateInput(this)" *@ />
+                <input type="text" name="inputNum" id="inputNum" class="form-control m-3" style="height:35px; width:150px;" oninput="validateInput(this)" />
                 <button id="exchangeButton" type="button" class="btn btn-primary">
                     <i class="fa-solid fa-right-left"></i>
                 </button>
@@ -114,10 +114,9 @@
         });
     </script>
 
-    @* <script>
-        function validateInput(input) {
-            // Заменить все символы, кроме цифр, точек и запятых, на пустую строку
-            input.value = input.value.replace(/[^\d.,]/g, '');
+    <script>
+        function validateInput(inputNum) {
+            inputNum.value = inputNum.value.replace(/[^0-9.,]/g, '');
         }
-    </script> *@
+    </script>
 }
