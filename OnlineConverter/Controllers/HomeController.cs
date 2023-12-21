@@ -26,6 +26,7 @@ namespace OnlineConverter.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            #region Робота з БД
             //Отримання даних з API
             var getRequest = new GetRequest("https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json");
             await getRequest.RunAsync();
@@ -43,9 +44,9 @@ namespace OnlineConverter.Controllers
             currencyJsons.Add(addUAH);
 
             //Витяг поточних даних з БД
-            Dictionary<string, Currency> dbcurrency = _db.Currencies.ToDictionary(c=>c.Code);
+            Dictionary<string, Currency> dbcurrency = _db.Currencies.ToDictionary(c => c.Code);
 
-            
+
             foreach (var obj in currencyJsons)
             {
                 //Перебір даних
@@ -60,7 +61,7 @@ namespace OnlineConverter.Controllers
                 {
                     obj.Name = "Новий ізраїл. шекель";
                 }
-                else if(obj.Code == "AZN")
+                else if (obj.Code == "AZN")
                 {
                     obj.Name = "Азербайджан. манат";
                 }
@@ -84,20 +85,20 @@ namespace OnlineConverter.Controllers
                     };
                     _db.Currencies.Add(currency);
                 }
-               
+
                 else
                 {
                     //Оновлюємо дані якщо потрібно
-                    if ( dbcurrency.Count !=0 && dbcurrency.TryGetValue(obj.Code, out Currency currency))
+                    if (dbcurrency.Count != 0 && dbcurrency.TryGetValue(obj.Code, out Currency currency))
                     {
-                        if(obj.Price != currency.Price)
+                        if (obj.Price != currency.Price)
                         {
                             currency.Price = obj.Price;
                             _db.Currencies.Update(currency);
                         }
                         else
                         {
-                            continue;                           
+                            continue;
                         }
                     }
                     else
@@ -108,6 +109,7 @@ namespace OnlineConverter.Controllers
             }
 
             await _db.SaveChangesAsync();
+            #endregion
 
             //Передача списку назв валют та їх Id в select
             CurrencyVM currencyVM = new CurrencyVM
@@ -119,6 +121,8 @@ namespace OnlineConverter.Controllers
                     Value = i.Id.ToString()
                 })
             };
+
+
 
             return View(currencyVM);
         }
