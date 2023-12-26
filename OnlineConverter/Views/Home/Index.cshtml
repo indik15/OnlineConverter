@@ -30,16 +30,41 @@
         @* Блок актуального курсу USD & EUR*@
         <div class="border col-md- p-0" style="width:400px; height:300px; margin-left:120px;">
             <div class="text-center h-25">
-                <span class="fs-3">Актуальний курс USD та EUR</span>
+                <span class="fs-3">Актуальний курс</span>
             </div>
             <div class="p-4">
                 <div class="row d-flex justify-content-between">
                     <span class="fs-1" style="max-width:105px; margin-left:30px;">USD:</span>
-                    <span class="fs-1" style="max-width:105px; margin-right:30px;">36.7</span>
+                    @if (Model.UsdIsUpdated)
+                    {
+                        <div class="fs-1 d-flex justify-content-center align-items-center" style="margin-left:50px; max-width:50px; padding-top:20px;">
+                            <div class="fa-solid fa-sort-up" style="color:green;"></div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="fs-1 d-flex justify-content-center align-items-center" style="margin-left:50px; max-width:50px; padding-bottom:15px;">
+                            <div class="fa-solid fa-sort-down" style="color:#940c0c;"></div>
+                        </div>
+                    }
+                    <span class="fs-1" style="max-width:105px; margin-right:25px;">@Model.Usd</span>
                 </div>
+
                 <div class="row mt-4 d-flex justify-content-between">
                     <span class="fs-1" style="max-width:105px; margin-left:30px;">EUR:</span>
-                    <span class="fs-1" style="max-width:105px; margin-right:30px;">41.2</span>
+                    @if (Model.EurIsUpdated)
+                    {
+                        <div class="fs-1 d-flex justify-content-center align-items-center" style="margin-left:50px; max-width:50px; padding-top:20px;">
+                            <div class="fa-solid fa-sort-up" style="color:green;"></div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="fs-1 d-flex justify-content-center align-items-center" style="margin-left:50px; max-width:50px; padding-bottom:15px;">
+                            <div class="fa-solid fa-sort-down" style="color:#940c0c;"></div>
+                        </div>
+                    }
+                    <span class="fs-1" style="max-width:105px; margin-right:25px;">@Model.Eur</span>
                 </div>
             </div>
         </div>

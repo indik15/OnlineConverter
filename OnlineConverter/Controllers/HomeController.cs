@@ -17,6 +17,11 @@ namespace OnlineConverter.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _db;
+        private bool _usdIsUpdated;
+        private bool _eurIsUpdated;
+        private double _usdPrice;
+        private double _eurPrice;
+
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext db)
         {
             _logger = logger;
@@ -74,6 +79,16 @@ namespace OnlineConverter.Controllers
                     obj.Name = "Туркмен. новий манат";
                 }
 
+                //Додаємо в блок "актуального курсу" курс долара та євро
+                if (obj.Code == "USD")
+                {
+                    _usdPrice = Math.Round(obj.Price, 2);
+                }
+                else if (obj.Code == "EUR")
+                {
+                    _eurPrice = Math.Round(obj.Price, 2);
+                }
+
                 //Якщо в БД пусто перезаписуємо її
                 if (!_db.Currencies.Any())
                 {
@@ -95,6 +110,31 @@ namespace OnlineConverter.Controllers
                         {
                             currency.Price = obj.Price;
                             _db.Currencies.Update(currency);
+
+                            //Встановлюємо флажок в залежності від зміни даних
+                            if(obj.Code == "USD")
+                            {
+                                if(obj.Price < currency.Price)
+                                {
+                                    _usdIsUpdated = false;
+                                }
+                                else if(obj.Price > currency.Price)
+                                {
+                                    _usdIsUpdated = true;
+                                }
+                            }
+
+                            if (obj.Code == "EUR")
+                            {
+                                if (obj.Price < currency.Price)
+                                {
+                                    _eurIsUpdated = false;
+                                }
+                                else if (obj.Price > currency.Price)
+                                {
+                                    _eurIsUpdated = true;
+                                }
+                            }
                         }
                         else
                         {
@@ -115,6 +155,10 @@ namespace OnlineConverter.Controllers
             CurrencyVM currencyVM = new CurrencyVM
             {
                 Currency = new Currency(),
+                EurIsUpdated = _eurIsUpdated,
+                UsdIsUpdated = _usdIsUpdated,
+                Usd = _usdPrice,
+                Eur = _eurPrice,
                 CurrencySelectList =  _db.Currencies.Select(i => new SelectListItem
                 {
                     Text = i.Name,
