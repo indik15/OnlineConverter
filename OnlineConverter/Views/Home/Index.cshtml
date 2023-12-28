@@ -35,7 +35,7 @@
             <div class="p-4">
                 <div class="row d-flex justify-content-between">
                     <span class="fs-1" style="max-width:105px; margin-left:30px;">USD:</span>
-                    @if (Model.UsdIsUpdated)
+                    @if (Model.CurrentRate.UsdIsUpdated)
                     {
                         <div class="fs-1 d-flex justify-content-center align-items-center" style="margin-left:50px; max-width:50px; padding-top:20px;">
                             <div class="fa-solid fa-sort-up" style="color:green;"></div>
@@ -52,7 +52,7 @@
 
                 <div class="row mt-4 d-flex justify-content-between">
                     <span class="fs-1" style="max-width:105px; margin-left:30px;">EUR:</span>
-                    @if (Model.EurIsUpdated)
+                    @if (Model.CurrentRate.EurIsUpdated)
                     {
                         <div class="fs-1 d-flex justify-content-center align-items-center" style="margin-left:50px; max-width:50px; padding-top:20px;">
                             <div class="fa-solid fa-sort-up" style="color:green;"></div>

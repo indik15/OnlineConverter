@@ -17,8 +17,6 @@ namespace OnlineConverter.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _db;
-        private bool _usdIsUpdated;
-        private bool _eurIsUpdated;
         private double _usdPrice;
         private double _eurPrice;
 
@@ -106,35 +104,52 @@ namespace OnlineConverter.Controllers
                     //Оновлюємо дані якщо потрібно
                     if (dbcurrency.Count != 0 && dbcurrency.TryGetValue(obj.Code, out Currency currency))
                     {
-                        if (obj.Price != currency.Price)
+                        if (obj.Code == "USD")
                         {
+
+                        }
+                        if (obj.Price != currency.Price)
+                        {                           
+                            CurrentRate currentRate = new CurrentRate();
+                            //Встановлюємо флажок в залежності від зміни даних
+                            if(obj.Code == "USD" || obj.Code == "EUR")
+                            {
+                                if (obj.Code == "USD")
+                                {
+                                    if (obj.Price < currency.Price)
+                                    {
+                                        currentRate.UsdIsUpdated = false;
+                                    }
+                                    else if (obj.Price > currency.Price)
+                                    {
+                                        currentRate.UsdIsUpdated = true;
+                                    }
+                                }
+
+                                else if (obj.Code == "EUR")
+                                {
+                                    if (obj.Price < currency.Price)
+                                    {
+                                        currentRate.EurIsUpdated = false;
+                                    }
+                                    else if (obj.Price > currency.Price)
+                                    {
+                                        currentRate.EurIsUpdated = true;
+                                    }
+                                }
+                                //якщо в БД немає даних встановлюємо дефолтні
+                                if (!_db.CurrentRates.Any())
+                                {
+                                    _db.CurrentRates.Add(currentRate);
+                                }
+                                else
+                                {
+                                    currentRate.Id = 1;
+                                    _db.CurrentRates.Update(currentRate);
+                                }
+                            }
                             currency.Price = obj.Price;
                             _db.Currencies.Update(currency);
-
-                            //Встановлюємо флажок в залежності від зміни даних
-                            if(obj.Code == "USD")
-                            {
-                                if(obj.Price < currency.Price)
-                                {
-                                    _usdIsUpdated = false;
-                                }
-                                else if(obj.Price > currency.Price)
-                                {
-                                    _usdIsUpdated = true;
-                                }
-                            }
-
-                            if (obj.Code == "EUR")
-                            {
-                                if (obj.Price < currency.Price)
-                                {
-                                    _eurIsUpdated = false;
-                                }
-                                else if (obj.Price > currency.Price)
-                                {
-                                    _eurIsUpdated = true;
-                                }
-                            }
                         }
                         else
                         {
@@ -148,15 +163,14 @@ namespace OnlineConverter.Controllers
                 }
             }
 
+
             await _db.SaveChangesAsync();
             #endregion
 
             //Передача списку назв валют та їх Id в select
             CurrencyVM currencyVM = new CurrencyVM
             {
-                Currency = new Currency(),
-                EurIsUpdated = _eurIsUpdated,
-                UsdIsUpdated = _usdIsUpdated,
+                CurrentRate = _db.CurrentRates.FirstOrDefault(),
                 Usd = _usdPrice,
                 Eur = _eurPrice,
                 CurrencySelectList =  _db.Currencies.Select(i => new SelectListItem
@@ -176,7 +190,6 @@ namespace OnlineConverter.Controllers
             //Передача списку назв валют та їх Id в select
             CurrencyVM currencyVM = new CurrencyVM
             {
-                Currency = new Currency(),
                 CurrencySelectList = _db.Currencies.Select(i => new SelectListItem
                 {
                     Text = i.Name,
