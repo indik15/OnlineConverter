@@ -10,5 +10,6 @@ namespace OnlineConverter.Data
             
         }
         public DbSet<Currency> Currencies { get; set; }
+        public DbSet<CurrentRate> CurrentRates { get; set; }
     }
 }
