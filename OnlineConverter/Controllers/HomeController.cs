@@ -104,10 +104,6 @@ namespace OnlineConverter.Controllers
                     //Оновлюємо дані якщо потрібно
                     if (dbcurrency.Count != 0 && dbcurrency.TryGetValue(obj.Code, out Currency currency))
                     {
-                        if (obj.Code == "USD")
-                        {
-
-                        }
                         if (obj.Price != currency.Price)
                         {                           
                             CurrentRate currentRate = new CurrentRate();
