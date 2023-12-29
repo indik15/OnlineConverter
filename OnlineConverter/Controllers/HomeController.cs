@@ -105,8 +105,13 @@ namespace OnlineConverter.Controllers
                     if (dbcurrency.Count != 0 && dbcurrency.TryGetValue(obj.Code, out Currency currency))
                     {
                         if (obj.Price != currency.Price)
-                        {                           
-                            CurrentRate currentRate = new CurrentRate();
+                        {
+                            CurrentRate currentRate = _db.CurrentRates.FirstOrDefault();
+                            if(currentRate == null)
+                            {
+                                currentRate = new CurrentRate();
+                                _db.CurrentRates.Add(currentRate);
+                            }
                             //Встановлюємо флажок в залежності від зміни даних
                             if(obj.Code == "USD" || obj.Code == "EUR")
                             {
@@ -133,17 +138,10 @@ namespace OnlineConverter.Controllers
                                         currentRate.EurIsUpdated = true;
                                     }
                                 }
-                                //якщо в БД немає даних встановлюємо дефолтні
-                                if (!_db.CurrentRates.Any())
-                                {
-                                    _db.CurrentRates.Add(currentRate);
-                                }
-                                else
-                                {
-                                    currentRate.Id = 1;
-                                    _db.CurrentRates.Update(currentRate);
-                                }
+                                currentRate.Id = 1;
+                                _db.CurrentRates.Update(currentRate);
                             }
+
                             currency.Price = obj.Price;
                             _db.Currencies.Update(currency);
                         }
