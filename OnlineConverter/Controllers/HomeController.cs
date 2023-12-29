@@ -138,7 +138,6 @@ namespace OnlineConverter.Controllers
                                         currentRate.EurIsUpdated = true;
                                     }
                                 }
-                                currentRate.Id = 1;
                                 _db.CurrentRates.Update(currentRate);
                             }
 
