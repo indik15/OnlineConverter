@@ -70,9 +70,9 @@
         </div>
 
         @* Блок графіка *@
-        <div class="border col-md-" style="width:800px; height:480px; margin-top:30px;">
+        <div class="border col-md-" style="width:800px; height:460px; margin-top:30px;">
             <div class="text-center" style="height:42px;">
-                <span class="fs-4">Графік змін USD та EUR</span>
+                <span class="fs-4">Графік змін</span>
             </div>
             <div class="border d-flex align-items-center justify-content-center" style="height:400px;">
                 <canvas id="myChart">
@@ -149,7 +149,7 @@
 
         let graphListUSD = @Html.Raw(Json.Serialize(Model.GraphListUSD));
         let graphListEUR = @Html.Raw(Json.Serialize(Model.GraphListEUR));
-        let labels = @Html.Raw(Json.Serialize(Model.str));
+        let labels = @Html.Raw(Json.Serialize(Model.CurrencyDate));
 
         let myChart = new Chart(ctx, {
             type: 'line',
