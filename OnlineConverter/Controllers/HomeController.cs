@@ -155,12 +155,16 @@ namespace OnlineConverter.Controllers
                     }
                 }
             }
-
+            #region Graph
             //Додаємо до моделі для графіка поля ціни та дати
             DateTime dateTime = DateTime.Now;
             UsdGraph usdGraph = new();
+
             usdGraph.Price = _usdPrice;
             usdGraph.Date = dateTime.ToString("d");
+
+            EurGraph eurGraph = new();
+            eurGraph.Price = _eurPrice;
 
             List<UsdGraph> usds = _db.UsdGraphs.ToList();
 
@@ -173,11 +177,29 @@ namespace OnlineConverter.Controllers
                 _db.UsdGraphs.Remove(usds[0]);
                 _db.UsdGraphs.Add(usdGraph);
             }
-            else if(usds != null && usds.Count < 7 && !(Math.Abs(usds[usds.Count - 1].Price - usdGraph.Price) < double.Epsilon))
+            else if (usds != null && usds.Count < 7 && !(Math.Abs(usds[usds.Count - 1].Price - usdGraph.Price) < double.Epsilon))
             {
                 _db.UsdGraphs.Add(usdGraph);
             }
-          
+
+
+            List<EurGraph> eurs = _db.EurGraphs.ToList();
+
+            if (eurs.Count == 0)
+            {
+                _db.EurGraphs.Add(eurGraph);
+            }
+            else if (eurs != null && eurs.Count == 7 && !(Math.Abs(eurs[eurs.Count - 1].Price - eurGraph.Price) < double.Epsilon))
+            {
+                _db.EurGraphs.Remove(eurs[0]);
+                _db.EurGraphs.Add(eurGraph);
+            }
+            else if (eurs != null && eurs.Count < 7 && !(Math.Abs(eurs[eurs.Count - 1].Price - eurGraph.Price) < double.Epsilon))
+            {
+                _db.EurGraphs.Add(eurGraph);
+            }
+            #endregion
+
 
             await _db.SaveChangesAsync();
             #endregion
@@ -186,8 +208,8 @@ namespace OnlineConverter.Controllers
             CurrencyVM currencyVM = new CurrencyVM
             {
                 CurrencyDate = _db.UsdGraphs.Select(u => u.Date).ToList(),
-                GraphListUSD = _db.UsdGraphs.Select(i=>i.Price).ToList(),
-                GraphListEUR = new List<double> { 20, 45.6, 12.1, 33.1, 34.1, 23.1, 35.03 },
+                GraphListUSD = _db.UsdGraphs.Select(i => i.Price).ToList(),
+                GraphListEUR = _db.EurGraphs.Select(c => c.Price).ToList(),
                 CurrentRate = _db.CurrentRates.FirstOrDefault(),
                 Usd = _usdPrice,
                 Eur = _eurPrice,
