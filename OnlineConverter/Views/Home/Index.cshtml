@@ -38,13 +38,13 @@
                     @if (Model.CurrentRate.UsdIsUpdated)
                     {
                         <div class="fs-1 d-flex justify-content-center align-items-center" style="margin-left:50px; max-width:50px; padding-top:20px;">
-                            <div class="fa-solid fa-sort-up" style="color:green;"></div>
+                            <div class="fa-solid fa-sort-up" style="color:#3bcc6e;"></div>
                         </div>
                     }
                     else
                     {
                         <div class="fs-1 d-flex justify-content-center align-items-center" style="margin-left:50px; max-width:50px; padding-bottom:15px;">
-                            <div class="fa-solid fa-sort-down" style="color:#940c0c;"></div>
+                            <div class="fa-solid fa-sort-down" style="color:#f24646;"></div>
                         </div>
                     }
                     <span class="fs-1" style="max-width:105px; margin-right:25px;">@Model.Usd</span>
@@ -55,13 +55,13 @@
                     @if (Model.CurrentRate.EurIsUpdated)
                     {
                         <div class="fs-1 d-flex justify-content-center align-items-center" style="margin-left:50px; max-width:50px; padding-top:20px;">
-                            <div class="fa-solid fa-sort-up" style="color:green;"></div>
+                            <div class="fa-solid fa-sort-up" style="color:#3bcc6e;"></div>
                         </div>
                     }
                     else
                     {
                         <div class="fs-1 d-flex justify-content-center align-items-center" style="margin-left:50px; max-width:50px; padding-bottom:15px;">
-                            <div class="fa-solid fa-sort-down" style="color:#940c0c;"></div>
+                            <div class="fa-solid fa-sort-down" style="color:#f24646;"></div>
                         </div>
                     }
                     <span class="fs-1" style="max-width:105px; margin-right:25px;">@Model.Eur</span>
@@ -160,14 +160,14 @@
                         label: 'USD',
                         data: graphListUSD,
                         backgroundColor: ['white'],
-                        borderColor: ['green'],
+                        borderColor: ['#3bcc6e'],
                         borderWidth: 4
                     },
                     {
                         label: 'EUR',
                         data: graphListEUR,
                         backgroundColor: ['white'],
-                        borderColor: ['red'],
+                        borderColor: ['#f24646'],
                         borderWidth: 4
                     }
                 ]
