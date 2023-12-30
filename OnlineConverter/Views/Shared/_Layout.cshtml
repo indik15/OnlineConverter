@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - OnlineConverter</title>
+    <title>@ViewData["Title"] OnlineConverter</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/OnlineConverter.styles.css" asp-append-version="true" />
@@ -14,14 +14,14 @@
             <div class="container-fluid">
                 <span class="navbar-brand" href="#">Online Converter</span>               
                 <div class="justify-content-start" id="navbarNav">
-                    <ul class="navbar-nav" style="flex-direction:row;">
+                    @* <ul class="navbar-nav" style="flex-direction:row;">
                         <li class="nav-item">
                             <a class="nav-link active btn btn-primary me-3" style="color:#fff" aria-current="page" href="#">Реєстрація</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link active btn btn-primary me-3" style="color:#fff; min-width:60px;" aria-current="page" href="#">Вхід</a>
                         </li>
-                    </ul>
+                    </ul> *@
                 </div>
             </div>
         </nav>
@@ -32,11 +32,18 @@
         </main>
     </div>
 
-    @* <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - OnlineConverter - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="border-top footer text-muted" style="height: 0px;">
+        <div>
+            <ul class="navbar-nav d-flex justify-content-between" style="flex-direction: row; padding:15px;">
+                <li>
+                    &copy; 2023 - OnlineConverter
+                </li>
+                <li>
+                    API - <a class="link-secondary" href="https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json">Національний банк України</a>
+                </li>
+            </ul>
         </div>
-    </footer> *@
+    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
