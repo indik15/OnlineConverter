@@ -12,5 +12,6 @@ namespace OnlineConverter.Data
         public DbSet<Currency> Currencies { get; set; }
         public DbSet<CurrentRate> CurrentRates { get; set; }
         public DbSet<UsdGraph> UsdGraphs { get; set; }
+        public DbSet<EurGraph> EurGraphs { get; set; }
     }
 }
