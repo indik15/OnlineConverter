@@ -156,7 +156,7 @@ namespace OnlineConverter.Controllers
                 }
             }
             #region Graph
-            //Додаємо до моделі для графіка поля ціни та дати
+            //Додаємо до VM поля для графіка
             DateTime dateTime = DateTime.Now;
             UsdGraph usdGraph = new();
 
