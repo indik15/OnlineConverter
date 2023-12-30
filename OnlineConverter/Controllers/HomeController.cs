@@ -28,7 +28,7 @@ namespace OnlineConverter.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Index()
-        {
+        {           
             #region Робота з БД
             //Отримання даних з API
             var getRequest = new GetRequest("https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json");
@@ -77,10 +77,10 @@ namespace OnlineConverter.Controllers
                     obj.Name = "Туркмен. новий манат";
                 }
 
-                //Додаємо в блок "актуального курсу" курс долара та євро
+                //Додаємо в блок "актуального курсу" курс долара та євро 
                 if (obj.Code == "USD")
                 {
-                    _usdPrice = Math.Round(obj.Price, 2);
+                    _usdPrice = Math.Round(obj.Price, 2);                   
                 }
                 else if (obj.Code == "EUR")
                 {
@@ -156,6 +156,28 @@ namespace OnlineConverter.Controllers
                 }
             }
 
+            //Додаємо до моделі для графіка поля ціни та дати
+            DateTime dateTime = DateTime.Now;
+            UsdGraph usdGraph = new();
+            usdGraph.Price = _usdPrice;
+            usdGraph.Date = dateTime.ToString("d");
+
+            List<UsdGraph> usds = _db.UsdGraphs.ToList();
+
+            if (usds.Count == 0)
+            {
+                _db.UsdGraphs.Add(usdGraph);
+            }
+            else if (usds != null && usds.Count == 7 && !(Math.Abs(usds[usds.Count - 1].Price - usdGraph.Price) < double.Epsilon))
+            {
+                _db.UsdGraphs.Remove(usds[0]);
+                _db.UsdGraphs.Add(usdGraph);
+            }
+            else if(usds != null && usds.Count < 7 && !(Math.Abs(usds[usds.Count - 1].Price - usdGraph.Price) < double.Epsilon))
+            {
+                _db.UsdGraphs.Add(usdGraph);
+            }
+          
 
             await _db.SaveChangesAsync();
             #endregion
@@ -163,6 +185,9 @@ namespace OnlineConverter.Controllers
             //Передача списку назв валют та їх Id в select
             CurrencyVM currencyVM = new CurrencyVM
             {
+                CurrencyDate = _db.UsdGraphs.Select(u => u.Date).ToList(),
+                GraphListUSD = _db.UsdGraphs.Select(i=>i.Price).ToList(),
+                GraphListEUR = new List<double> { 20, 45.6, 12.1, 33.1, 34.1, 23.1, 35.03 },
                 CurrentRate = _db.CurrentRates.FirstOrDefault(),
                 Usd = _usdPrice,
                 Eur = _eurPrice,
