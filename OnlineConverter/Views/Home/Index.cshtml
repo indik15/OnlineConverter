@@ -2,12 +2,12 @@
 
 <div class="container p-0">
 
-    <div style="margin-top:50px;">
+    @* <div style="margin-top:50px;">
         <form method="post" asp-action="DbClear">
-            <button type="submit" class="btn btn-danger" style="margin-bottom:70px;">Очистить БД</button>
+            <button type="submit" class="btn btn-danger" style="margin-bottom:30px;">Очистить БД</button>
         </form>
-    </div>
-    <div class="row" style="margin-top:100px;">
+    </div> *@
+    <div class="row" style="margin-top:50px;">
 
         @* Блок конвертації *@
         <form method="post" class="border col-md- p-3 d-flex align-items-center justify-content-center" style="width:800px; height:300px; margin-bottom:30px;">
@@ -70,11 +70,14 @@
         </div>
 
         @* Блок графіка *@
-        <div class="border col-md-" style="width:800px; height:300px; margin-top:30px;">
+        <div class="border col-md-" style="width:800px; height:480px; margin-top:30px;">
             <div class="text-center" style="height:42px;">
                 <span class="fs-4">Графік змін USD та EUR</span>
             </div>
-            <div class="border h-75">
+            <div class="border d-flex align-items-center justify-content-center" style="height:400px;">
+                <canvas id="myChart">
+
+                </canvas>
             </div>
         </div>
 
@@ -140,4 +143,65 @@
             inputNum.value = inputNum.value.replace(/[^0-9.,]/g, '');
         }
     </script>
+
+    <script>
+        let ctx = document.getElementById('myChart');
+
+        let graphListUSD = @Html.Raw(Json.Serialize(Model.GraphListUSD));
+        let graphListEUR = @Html.Raw(Json.Serialize(Model.GraphListEUR));
+        let labels = @Html.Raw(Json.Serialize(Model.str));
+
+        let myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'USD',
+                        data: graphListUSD,
+                        backgroundColor: ['white'],
+                        borderColor: ['green'],
+                        borderWidth: 4
+                    },
+                    {
+                        label: 'EUR',
+                        data: graphListEUR,
+                        backgroundColor: ['white'],
+                        borderColor: ['red'],
+                        borderWidth: 4
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    x: {
+                        display: true,
+                        ticks: {
+                            callback: function (value, index, values) {
+                                return index + 1;
+                            }
+                        }
+                    },
+                    y: {
+                        display: true
+                    }
+                },
+                tooltips: {
+                    mode: 'index',
+                    callbacks: {
+                        label: function (tooltipItem, data) {
+                            let index = tooltipItem.index;
+                            return 'Date: ' + labels[index] + ' - ' + data.datasets[tooltipItem.datasetIndex].label + ' Value: ' + tooltipItem.yLabel;
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+
+
+
+
+
 }
