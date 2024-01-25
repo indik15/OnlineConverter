@@ -26,10 +26,8 @@ namespace OnlineConverter.Controllers
             _db = db;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Index()
-        {           
-            #region Робота з БД
+        private async Task<List<CurrencyJson>> TakeJson()
+        {
             //Отримання даних з API
             var getRequest = new GetRequest("https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json");
             await getRequest.RunAsync();
@@ -46,9 +44,66 @@ namespace OnlineConverter.Controllers
             };
             currencyJsons.Add(addUAH);
 
+            return currencyJsons;
+        }
+
+        private void Graph()
+        {
+            #region Graph
+            //Додаємо до VM поля для графіка
+            DateTime dateTime = DateTime.Now;
+            UsdGraph usdGraph = new();
+
+            usdGraph.Price = _usdPrice;
+            usdGraph.Date = dateTime.ToString("d");
+
+            EurGraph eurGraph = new();
+            eurGraph.Price = _eurPrice;
+
+            List<UsdGraph> usds = _db.UsdGraphs.ToList();
+
+            if (usds.Count == 0)
+            {
+                _db.UsdGraphs.Add(usdGraph);
+            }
+            else if (usds != null && usds.Count == 7 && !(Math.Abs(usds[usds.Count - 1].Price - usdGraph.Price) < double.Epsilon))
+            {
+                _db.UsdGraphs.Remove(usds[0]);
+                _db.UsdGraphs.Add(usdGraph);
+            }
+            else if (usds != null && usds.Count < 7 && !(Math.Abs(usds[usds.Count - 1].Price - usdGraph.Price) < double.Epsilon))
+            {
+                _db.UsdGraphs.Add(usdGraph);
+            }
+
+
+            List<EurGraph> eurs = _db.EurGraphs.ToList();
+
+            if (eurs.Count == 0)
+            {
+                _db.EurGraphs.Add(eurGraph);
+            }
+            else if (eurs != null && eurs.Count == 7 && !(Math.Abs(eurs[eurs.Count - 1].Price - eurGraph.Price) < double.Epsilon))
+            {
+                _db.EurGraphs.Remove(eurs[0]);
+                _db.EurGraphs.Add(eurGraph);
+            }
+            else if (eurs != null && eurs.Count < 7 && !(Math.Abs(eurs[eurs.Count - 1].Price - eurGraph.Price) < double.Epsilon))
+            {
+                _db.EurGraphs.Add(eurGraph);
+            }
+            #endregion
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {           
+            #region Робота з БД           
+
             //Витяг поточних даних з БД
             Dictionary<string, Currency> dbcurrency = _db.Currencies.ToDictionary(c => c.Code);
 
+            List<CurrencyJson> currencyJsons = await TakeJson();
 
             foreach (var obj in currencyJsons)
             {
@@ -155,51 +210,9 @@ namespace OnlineConverter.Controllers
                     }
                 }
             }
-            #region Graph
-            //Додаємо до VM поля для графіка
-            DateTime dateTime = DateTime.Now;
-            UsdGraph usdGraph = new();
-
-            usdGraph.Price = _usdPrice;
-            usdGraph.Date = dateTime.ToString("d");
-
-            EurGraph eurGraph = new();
-            eurGraph.Price = _eurPrice;
-
-            List<UsdGraph> usds = _db.UsdGraphs.ToList();
-
-            if (usds.Count == 0)
-            {
-                _db.UsdGraphs.Add(usdGraph);
-            }
-            else if (usds != null && usds.Count == 7 && !(Math.Abs(usds[usds.Count - 1].Price - usdGraph.Price) < double.Epsilon))
-            {
-                _db.UsdGraphs.Remove(usds[0]);
-                _db.UsdGraphs.Add(usdGraph);
-            }
-            else if (usds != null && usds.Count < 7 && !(Math.Abs(usds[usds.Count - 1].Price - usdGraph.Price) < double.Epsilon))
-            {
-                _db.UsdGraphs.Add(usdGraph);
-            }
-
-
-            List<EurGraph> eurs = _db.EurGraphs.ToList();
-
-            if (eurs.Count == 0)
-            {
-                _db.EurGraphs.Add(eurGraph);
-            }
-            else if (eurs != null && eurs.Count == 7 && !(Math.Abs(eurs[eurs.Count - 1].Price - eurGraph.Price) < double.Epsilon))
-            {
-                _db.EurGraphs.Remove(eurs[0]);
-                _db.EurGraphs.Add(eurGraph);
-            }
-            else if (eurs != null && eurs.Count < 7 && !(Math.Abs(eurs[eurs.Count - 1].Price - eurGraph.Price) < double.Epsilon))
-            {
-                _db.EurGraphs.Add(eurGraph);
-            }
-            #endregion
-
+           
+            //Викликаємо метод для графіка
+            //Graph();
 
             await _db.SaveChangesAsync();
             #endregion
